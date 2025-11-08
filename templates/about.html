@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About | Phishing Website Detection</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .fade-in { animation: fadeIn 1s ease-in-out; }
+    @keyframes fadeIn { from {opacity: 0;} to {opacity: 1;} }
+    .dark-mode {
+      background: linear-gradient(to bottom right, #0f172a, #1e293b);
+      color: white;
+    }
+    .light-mode {
+      background: linear-gradient(to bottom right, #e0f2fe, #f1f5f9);
+      color: #111827;
+    }
+  </style>
+</head>
+
+<body id="page" class="dark-mode min-h-screen flex flex-col transition-all duration-700">
+
+  <!-- Navbar -->
+  <nav class="bg-gray-800/80 backdrop-blur-md p-4 flex justify-between items-center shadow-lg">
+    <h1 class="text-xl font-bold text-blue-400">🔒 Phishing Detector</h1>
+
+    <div class="flex items-center space-x-6">
+      <a href="/" class="hover:text-blue-400">Home</a>
+      <a href="/about" class="text-blue-400 font-semibold">About</a>
+      <a href="/contact" class="hover:text-blue-400">Contact</a>
+
+      <!-- Theme Toggle -->
+      <button id="toggleTheme" class="bg-gray-700 hover:bg-gray-600 text-white px-3 py-1 rounded-md text-sm">
+        ☀️ Light
+      </button>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="flex flex-col items-center justify-center flex-grow text-center p-8 fade-in">
+    <h2 class="text-3xl font-bold mb-6 text-blue-400">About This Project</h2>
+
+    <p class="max-w-3xl text-gray-300 mb-8 leading-relaxed">
+      The <b>Phishing Website Detection System</b> is a cybersecurity project that uses <b>Machine Learning</b> 
+      to identify and flag potential phishing URLs. The model analyzes key URL patterns and predicts whether 
+      a site is <b>Safe</b> or <b>Phishing</b>, helping protect users from online frauds.
+    </p>
+
+    <h3 class="text-2xl font-semibold text-blue-400 mb-3">🎯 Objectives</h3>
+    <ul class="max-w-xl text-gray-300 text-left list-disc list-inside mb-8">
+      <li>Detect phishing URLs using intelligent ML models</li>
+      <li>Protect users from malicious websites and data theft</li>
+      <li>Provide real-time, accurate classification of web links</li>
+    </ul>
+
+    <h3 class="text-2xl font-semibold text-blue-400 mb-3">🧠 Technologies Used</h3>
+    <div class="grid grid-cols-2 md:grid-cols-3 gap-4 text-gray-300 mb-8">
+      <div class="bg-gray-800 p-3 rounded-lg shadow-md">Python (Flask)</div>
+      <div class="bg-gray-800 p-3 rounded-lg shadow-md">Scikit-learn (ML)</div>
+      <div class="bg-gray-800 p-3 rounded-lg shadow-md">Tailwind CSS</div>
+      <div class="bg-gray-800 p-3 rounded-lg shadow-md">HTML / JS</div>
+      <div class="bg-gray-800 p-3 rounded-lg shadow-md">Pickle Models</div>
+      <div class="bg-gray-800 p-3 rounded-lg shadow-md">GitHub Deployment</div>
+    </div>
+
+    <h3 class="text-2xl font-semibold text-blue-400 mb-3">👨‍💻 Developers</h3>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-gray-200">
+      <div class="bg-gray-800 rounded-lg p-4">
+        <p><b>Rohit Yadav</b></p>
+        <p>Marwadi University</p>
+        <p>Enrollment: 92200103266</p>
+      </div>
+      <div class="bg-gray-800 rounded-lg p-4">
+        <p><b>Raghvendra Rajpoot</b></p>
+        <p>Marwadi University</p>
+        <p>Enrollment: 92200103309</p>
+      </div>
+    </div>
+  </main>
+
+  <footer class="bg-gray-800 text-center py-4 text-gray-400 text-sm">
+    © 2025 | Developed by <span class="text-blue-400 font-semibold">Rohit Yadav</span>
+  </footer>
+
+  <!-- Theme Script -->
+  <script>
+    const toggleBtn = document.getElementById("toggleTheme");
+    const page = document.getElementById("page");
+    let dark = true;
+
+    toggleBtn.addEventListener("click", () => {
+      dark = !dark;
+      if (dark) {
+        page.classList.replace("light-mode", "dark-mode");
+        toggleBtn.textContent = "☀️ Light";
+      } else {
+        page.classList.replace("dark-mode", "light-mode");
+        toggleBtn.textContent = "🌙 Dark";
+      }
+    });
+  </script>
+</body>
+</html>

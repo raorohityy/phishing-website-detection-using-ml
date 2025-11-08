@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact | Phishing Website Detection</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .fade-in { animation: fadeIn 1s ease-in-out; }
+    @keyframes fadeIn { from {opacity: 0;} to {opacity: 1;} }
+    .dark-mode {
+      background: linear-gradient(to bottom right, #0f172a, #1e293b);
+      color: white;
+    }
+    .light-mode {
+      background: linear-gradient(to bottom right, #e0f2fe, #f1f5f9);
+      color: #111827;
+    }
+  </style>
+</head>
+
+<body id="page" class="dark-mode min-h-screen flex flex-col transition-all duration-700">
+
+  <!-- Navbar -->
+  <nav class="bg-gray-800/80 backdrop-blur-md p-4 flex justify-between items-center shadow-lg">
+    <h1 class="text-xl font-bold text-blue-400">🔒 Phishing Detector</h1>
+
+    <div class="flex items-center space-x-6">
+      <a href="/" class="hover:text-blue-400">Home</a>
+      <a href="/about" class="hover:text-blue-400">About</a>
+      <a href="/contact" class="text-blue-400 font-semibold">Contact</a>
+
+      <!-- Theme Toggle -->
+      <button id="toggleTheme" class="bg-gray-700 hover:bg-gray-600 text-white px-3 py-1 rounded-md text-sm">
+        ☀️ Light
+      </button>
+    </div>
+  </nav>
+
+  <!-- Contact Section -->
+  <main class="flex flex-col items-center justify-center flex-grow p-6 fade-in">
+    <h2 class="text-3xl font-bold mb-4 text-blue-400">Contact Us</h2>
+    <p class="text-gray-300 mb-6 max-w-xl text-center">
+      Got feedback or facing issues? Reach out to us through the form below — we’d love to hear from you!
+    </p>
+
+    {% if success %}
+    <div class="bg-green-600 text-white p-3 rounded-md mb-4">✅ Message Sent Successfully!</div>
+    {% endif %}
+
+    <form method="POST" class="bg-gray-800 p-6 rounded-lg shadow-lg w-full max-w-md">
+      <input type="email" name="email" placeholder="Your Email" required
+             class="w-full mb-3 p-2 rounded-md text-black focus:outline-none">
+      <textarea name="message" placeholder="Your Message..." rows="4" required
+                class="w-full mb-3 p-2 rounded-md text-black focus:outline-none"></textarea>
+      <button type="submit"
+              class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-md">
+        Send Message
+      </button>
+    </form>
+
+    <div class="mt-6 flex justify-center space-x-6 text-2xl">
+      <a href="#" class="text-blue-400 hover:text-blue-300"><i class="bi bi-linkedin"></i></a>
+      <a href="#" class="text-gray-300 hover:text-white"><i class="bi bi-github"></i></a>
+      <a href="#" class="text-pink-400 hover:text-pink-300"><i class="bi bi-envelope-fill"></i></a>
+    </div>
+  </main>
+
+  <footer class="bg-gray-800 text-center py-4 text-gray-400 text-sm">
+    © 2025 | Developed by <span class="text-blue-400 font-semibold">Rohit Yadav</span>
+  </footer>
+
+  <!-- Theme Toggle Script -->
+  <script>
+    const toggleBtn = document.getElementById("toggleTheme");
+    const page = document.getElementById("page");
+    let dark = true;
+
+    toggleBtn.addEventListener("click", () => {
+      dark = !dark;
+      if (dark) {
+        page.classList.replace("light-mode", "dark-mode");
+        toggleBtn.textContent = "☀️ Light";
+      } else {
+        page.classList.replace("dark-mode", "light-mode");
+        toggleBtn.textContent = "🌙 Dark";
+      }
+    });
+  </script>
+</body>
+</html>
