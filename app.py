@@ -4,12 +4,19 @@ import re
 import os
 import json
 from flask_mail import Mail, Message
+from dotenv import load_dotenv
+
+load_dotenv(override=True)
 
 app = Flask(__name__)
 
 # ===============================
 # Load Model and Vectorizer
 # ===============================
+@app.route('/favicon.ico')
+def favicon():
+    return '', 204
+
 vector = pickle.load(open("vectorizer.pkl", 'rb'))
 model = pickle.load(open("phishing.pkl", 'rb'))
 
@@ -17,10 +24,17 @@ model = pickle.load(open("phishing.pkl", 'rb'))
 # Email Configuration (Contact Page)
 # ===============================
 app.config['MAIL_SERVER'] = 'smtp.gmail.com'
-app.config['MAIL_PORT'] = 587
-app.config['MAIL_USE_TLS'] = True
-app.config['MAIL_USERNAME'] = os.getenv('MAIL_USERNAME')  # your Gmail
-app.config['MAIL_PASSWORD'] = os.getenv('MAIL_PASSWORD')  # app password
+app.config['MAIL_PORT'] = 465
+app.config['MAIL_USE_TLS'] = False
+app.config['MAIL_USE_SSL'] = True
+app.config['MAIL_USERNAME'] = os.getenv('MAIL_USERNAME')
+app.config['MAIL_PASSWORD'] = os.getenv('MAIL_PASSWORD')
+
+# Debug prints to verify loading (Temporary)
+print(f"DEBUG: MAIL_USERNAME value: {app.config['MAIL_USERNAME']}")
+if app.config['MAIL_PASSWORD']:
+    print(f"DEBUG: MAIL_PASSWORD loaded (length: {len(app.config['MAIL_PASSWORD'])})")
+
 mail = Mail(app)
 
 # ===============================
@@ -53,6 +67,7 @@ load_stats()
 @app.route("/", methods=["GET", "POST"])
 def index():
     global stats
+    print(f"DEBUG: Index route accessed. Current stats: {stats}")
     prediction = None
 
     if request.method == "POST":
@@ -71,6 +86,7 @@ def index():
         else:
             prediction = "❌ Something went wrong during prediction."
 
+        print(f"DEBUG: Stats updated -> {stats}")
         # Save the updated counts
         save_stats()
 
@@ -99,6 +115,16 @@ def contact():
             return render_template("contact.html", success=False, error=str(e))
 
     return render_template("contact.html")
+
+
+@app.route("/login")
+def login():
+    return render_template("login.html")
+
+
+@app.route("/signup")
+def signup():
+    return render_template("signup.html")
 
 
 # ===============================

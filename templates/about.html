@@ -1,17 +1,31 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>About | Phishing Website Detection</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    .fade-in { animation: fadeIn 1s ease-in-out; }
-    @keyframes fadeIn { from {opacity: 0;} to {opacity: 1;} }
+    .fade-in {
+      animation: fadeIn 1s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+
+      to {
+        opacity: 1;
+      }
+    }
+
     .dark-mode {
       background: linear-gradient(to bottom right, #0f172a, #1e293b);
       color: white;
     }
+
     .light-mode {
       background: linear-gradient(to bottom right, #e0f2fe, #f1f5f9);
       color: #111827;
@@ -29,6 +43,10 @@
       <a href="/" class="hover:text-blue-400">Home</a>
       <a href="/about" class="text-blue-400 font-semibold">About</a>
       <a href="/contact" class="hover:text-blue-400">Contact</a>
+      <a href="/login" id="nav-login" class="hover:text-blue-400">Login</a>
+      <a href="/signup" id="nav-signup"
+        class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded-md text-sm transition-all">Sign Up</a>
+      <button id="nav-logout" class="text-red-400 hover:text-red-300 hidden" style="display: none;">Logout</button>
 
       <!-- Theme Toggle -->
       <button id="toggleTheme" class="bg-gray-700 hover:bg-gray-600 text-white px-3 py-1 rounded-md text-sm">
@@ -42,19 +60,19 @@
     <h2 class="text-3xl font-bold mb-6 text-blue-400">About This Project</h2>
 
     <p class="max-w-3xl text-gray-300 mb-8 leading-relaxed">
-      The <b>Phishing Website Detection System</b> is a cybersecurity project that uses <b>Machine Learning</b> 
-      to identify and flag potential phishing URLs. The model analyzes key URL patterns and predicts whether 
+      The <b>Phishing Website Detection System</b> is a cybersecurity project that uses <b>Machine Learning</b>
+      to identify and flag potential phishing URLs. The model analyzes key URL patterns and predicts whether
       a site is <b>Safe</b> or <b>Phishing</b>, helping protect users from online frauds.
     </p>
 
-    <h3 class="text-2xl font-semibold text-blue-400 mb-3">🎯 Objectives</h3>
+    <h3 class="text-2xl font-semibold text-blue-400 mb-3"> Objectives</h3>
     <ul class="max-w-xl text-gray-300 text-left list-disc list-inside mb-8">
       <li>Detect phishing URLs using intelligent ML models</li>
       <li>Protect users from malicious websites and data theft</li>
       <li>Provide real-time, accurate classification of web links</li>
     </ul>
 
-    <h3 class="text-2xl font-semibold text-blue-400 mb-3">🧠 Technologies Used</h3>
+    <h3 class="text-2xl font-semibold text-blue-400 mb-3"> Technologies Used</h3>
     <div class="grid grid-cols-2 md:grid-cols-3 gap-4 text-gray-300 mb-8">
       <div class="bg-gray-800 p-3 rounded-lg shadow-md">Python (Flask)</div>
       <div class="bg-gray-800 p-3 rounded-lg shadow-md">Scikit-learn (ML)</div>
@@ -64,7 +82,7 @@
       <div class="bg-gray-800 p-3 rounded-lg shadow-md">GitHub Deployment</div>
     </div>
 
-    <h3 class="text-2xl font-semibold text-blue-400 mb-3">👨‍💻 Developers</h3>
+    <h3 class="text-2xl font-semibold text-blue-400 mb-3"> Developers</h3>
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-gray-200">
       <div class="bg-gray-800 rounded-lg p-4">
         <p><b>Rohit Yadav</b></p>
@@ -100,5 +118,12 @@
       }
     });
   </script>
+
+  <!-- Auth Monitor -->
+  <script type="module">
+    import { monitorAuthState } from "/static/js/auth.js";
+    monitorAuthState();
+  </script>
 </body>
+
 </html>

@@ -1,17 +1,31 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Contact | Phishing Website Detection</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    .fade-in { animation: fadeIn 1s ease-in-out; }
-    @keyframes fadeIn { from {opacity: 0;} to {opacity: 1;} }
+    .fade-in {
+      animation: fadeIn 1s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+
+      to {
+        opacity: 1;
+      }
+    }
+
     .dark-mode {
       background: linear-gradient(to bottom right, #0f172a, #1e293b);
       color: white;
     }
+
     .light-mode {
       background: linear-gradient(to bottom right, #e0f2fe, #f1f5f9);
       color: #111827;
@@ -29,6 +43,10 @@
       <a href="/" class="hover:text-blue-400">Home</a>
       <a href="/about" class="hover:text-blue-400">About</a>
       <a href="/contact" class="text-blue-400 font-semibold">Contact</a>
+      <a href="/login" id="nav-login" class="hover:text-blue-400">Login</a>
+      <a href="/signup" id="nav-signup"
+        class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded-md text-sm transition-all">Sign Up</a>
+      <button id="nav-logout" class="text-red-400 hover:text-red-300 hidden" style="display: none;">Logout</button>
 
       <!-- Theme Toggle -->
       <button id="toggleTheme" class="bg-gray-700 hover:bg-gray-600 text-white px-3 py-1 rounded-md text-sm">
@@ -48,13 +66,21 @@
     <div class="bg-green-600 text-white p-3 rounded-md mb-4">✅ Message Sent Successfully!</div>
     {% endif %}
 
+    {% if error %}
+    <div class="bg-red-600 text-white p-3 rounded-md mb-4">❌ Error: {{ error }}</div>
+    <div class="text-sm text-gray-400 mb-4">
+      *Note: Ensure you have set up your <b>MAIL_USERNAME</b> and <b>MAIL_PASSWORD</b> in app.py or environment
+      variables.
+      <br>For Gmail, you must use an <b>App Password</b>, not your login password.
+    </div>
+    {% endif %}
+
     <form method="POST" class="bg-gray-800 p-6 rounded-lg shadow-lg w-full max-w-md">
       <input type="email" name="email" placeholder="Your Email" required
-             class="w-full mb-3 p-2 rounded-md text-black focus:outline-none">
+        class="w-full mb-3 p-2 rounded-md text-black focus:outline-none">
       <textarea name="message" placeholder="Your Message..." rows="4" required
-                class="w-full mb-3 p-2 rounded-md text-black focus:outline-none"></textarea>
-      <button type="submit"
-              class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-md">
+        class="w-full mb-3 p-2 rounded-md text-black focus:outline-none"></textarea>
+      <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-md">
         Send Message
       </button>
     </form>
@@ -87,5 +113,30 @@
       }
     });
   </script>
+
+  <!-- Auth Monitor and Auto-fill -->
+  <script type="module">
+    import { monitorAuthState } from "/static/js/auth.js";
+    import { app } from "/static/js/firebase-config.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
+
+    // Monitor auth state for navbar
+    monitorAuthState();
+
+    // Auto-fill email if logged in
+    const auth = getAuth(app);
+    onAuthStateChanged(auth, (user) => {
+      if (user && user.email) {
+        const emailInput = document.querySelector('input[name="email"]');
+        if (emailInput) {
+          emailInput.value = user.email;
+          // Removed readOnly and gray styling effectively making it editable "not stuck"
+          // emailInput.readOnly = true; 
+          // emailInput.classList.add("bg-gray-700", "cursor-not-allowed"); 
+        }
+      }
+    });
+  </script>
 </body>
+
 </html>
