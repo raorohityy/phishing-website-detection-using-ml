@@ -22,8 +22,26 @@ def favicon():
 
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-vector = pickle.load(open(os.path.join(BASE_DIR, "vectorizer.pkl"), 'rb'))
-model = pickle.load(open(os.path.join(BASE_DIR, "phishing.pkl"), 'rb'))
+# vector = pickle.load(open(os.path.join(BASE_DIR, "vectorizer.pkl"), 'rb'))
+# model = pickle.load(open(os.path.join(BASE_DIR, "phishing.pkl"), 'rb'))
+
+# Global variables for lazy loading
+vector = None
+model = None
+
+def get_vectorizer():
+    global vector
+    if vector is None:
+        print("Loading vectorizer...")
+        vector = pickle.load(open(os.path.join(BASE_DIR, "vectorizer.pkl"), 'rb'))
+    return vector
+
+def get_model():
+    global model
+    if model is None:
+        print("Loading model...")
+        model = pickle.load(open(os.path.join(BASE_DIR, "phishing.pkl"), 'rb'))
+    return model
 
 # ===============================
 # Email Configuration (Contact Page)
@@ -81,7 +99,7 @@ def api_predict():
     
     url = data['url']
     cleaned_url = re.sub(r'^https?://(www\.)?', '', url)
-    result = model.predict(vector.transform([cleaned_url]))[0]
+    result = get_model().predict(get_vectorizer().transform([cleaned_url]))[0]
 
     global stats
     stats["total"] += 1
