@@ -2,7 +2,8 @@ import smtplib
 import os
 from dotenv import load_dotenv
 
-load_dotenv(override=True)
+
+load_dotenv(os.path.join(os.path.dirname(os.path.abspath(__file__)), '.env'), override=True)
 
 username = os.getenv('MAIL_USERNAME')
 password = os.getenv('MAIL_PASSWORD')

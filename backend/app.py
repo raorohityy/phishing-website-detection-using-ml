@@ -6,9 +6,10 @@ import json
 from flask_mail import Mail, Message
 from dotenv import load_dotenv
 
-load_dotenv(override=True)
 
-app = Flask(__name__)
+load_dotenv(os.path.join(os.path.dirname(__file__), '.env'), override=True)
+
+app = Flask(__name__, template_folder='../frontend/templates', static_folder='../frontend/static')
 
 # ===============================
 # Load Model and Vectorizer
@@ -17,8 +18,10 @@ app = Flask(__name__)
 def favicon():
     return '', 204
 
-vector = pickle.load(open("vectorizer.pkl", 'rb'))
-model = pickle.load(open("phishing.pkl", 'rb'))
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+vector = pickle.load(open(os.path.join(BASE_DIR, "vectorizer.pkl"), 'rb'))
+model = pickle.load(open(os.path.join(BASE_DIR, "phishing.pkl"), 'rb'))
 
 # ===============================
 # Email Configuration (Contact Page)
@@ -40,7 +43,7 @@ mail = Mail(app)
 # ===============================
 # Stats Handling (Saved Persistently)
 # ===============================
-stats_file = "stats.json"
+stats_file = os.path.join(BASE_DIR, "stats.json")
 
 # Default counters
 stats = {"total": 0, "safe": 0, "phishing": 0}
