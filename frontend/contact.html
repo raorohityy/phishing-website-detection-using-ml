@@ -62,28 +62,76 @@
       Got feedback or facing issues? Reach out to us through the form below — we’d love to hear from you!
     </p>
 
-    {% if success %}
-    <div class="bg-green-600 text-white p-3 rounded-md mb-4">✅ Message Sent Successfully!</div>
-    {% endif %}
+    <!-- Message Container -->
+    <div id="messageContainer" class="hidden mb-4 p-3 rounded-md text-white text-center"></div>
 
-    {% if error %}
-    <div class="bg-red-600 text-white p-3 rounded-md mb-4">❌ Error: {{ error }}</div>
-    <div class="text-sm text-gray-400 mb-4">
-      *Note: Ensure you have set up your <b>MAIL_USERNAME</b> and <b>MAIL_PASSWORD</b> in app.py or environment
-      variables.
-      <br>For Gmail, you must use an <b>App Password</b>, not your login password.
+    <div class="text-sm text-gray-400 mb-4 text-center">
+      *Note: Ensure backend environment variables are set for email sending.
     </div>
-    {% endif %}
 
-    <form method="POST" class="bg-gray-800 p-6 rounded-lg shadow-lg w-full max-w-md">
-      <input type="email" name="email" placeholder="Your Email" required
+    <form id="contactForm" class="bg-gray-800 p-6 rounded-lg shadow-lg w-full max-w-md">
+      <input type="email" name="email" id="email" placeholder="Your Email" required
         class="w-full mb-3 p-2 rounded-md text-black focus:outline-none">
-      <textarea name="message" placeholder="Your Message..." rows="4" required
+      <textarea name="message" id="message" placeholder="Your Message..." rows="4" required
         class="w-full mb-3 p-2 rounded-md text-black focus:outline-none"></textarea>
-      <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-md">
+      <button type="submit" id="submitBtn"
+        class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-md">
         Send Message
       </button>
     </form>
+
+    <script>
+      const contactForm = document.getElementById('contactForm');
+      const messageContainer = document.getElementById('messageContainer');
+      const submitBtn = document.getElementById('submitBtn');
+
+      // Configuration - pointing to Render backend
+      const API_BASE_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+        ? 'http://127.0.0.1:5000'
+        : 'https://phishing-website-detection-using-ml-kvue.onrender.com';
+
+      contactForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        // Reset UI
+        messageContainer.classList.add('hidden');
+        messageContainer.classList.remove('bg-green-600', 'bg-red-600');
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Sending...';
+
+        const email = document.getElementById('email').value;
+        const message = document.getElementById('message').value;
+
+        try {
+          const response = await fetch(`${API_BASE_URL}/contact`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ email, message })
+          });
+
+          const data = await response.json();
+
+          messageContainer.classList.remove('hidden');
+          if (data.success || response.ok) {
+            messageContainer.classList.add('bg-green-600');
+            messageContainer.textContent = '✅ Message Sent Successfully!';
+            contactForm.reset();
+          } else {
+            throw new Error(data.error || 'Failed to send message');
+          }
+        } catch (error) {
+          console.error('Error:', error);
+          messageContainer.classList.remove('hidden');
+          messageContainer.classList.add('bg-red-600');
+          messageContainer.textContent = `❌ Error: ${error.message}`;
+        } finally {
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'Send Message';
+        }
+      });
+    </script>
 
     <div class="mt-6 flex justify-center space-x-6 text-2xl">
       <a href="#" class="text-blue-400 hover:text-blue-300"><i class="bi bi-linkedin"></i></a>
