@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phishing Website Detection</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        .fade-in {
+            animation: fadeIn 0.8s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .card {
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.5);
+        }
+
+        .dark-mode {
+            background: linear-gradient(to bottom right, #0f172a, #1e293b);
+            color: white;
+        }
+
+        .light-mode {
+            background: linear-gradient(to bottom right, #e0f2fe, #f1f5f9);
+            color: #111827;
+        }
+    </style>
+</head>
+
+<body id="page" class="dark-mode min-h-screen flex flex-col transition-all duration-700">
+
+    <!-- Navbar -->
+    <nav class="bg-gray-800/80 backdrop-blur-md p-4 flex justify-between items-center shadow-lg">
+        <h1 class="text-xl font-bold text-blue-400">🔒 Phishing Detector</h1>
+
+        <div class="flex items-center space-x-6">
+            <a href="/" class="text-blue-400 font-semibold">Home</a>
+            <!-- Links are now relative to the static site structure or external if needed -->
+            <!-- For a single page app or simple static site, these might just be anchors or separate HTML files -->
+            <a href="about.html" class="hover:text-blue-400">About</a>
+            <a href="contact.html" class="hover:text-blue-400">Contact</a>
+            <a href="login.html" id="nav-login" class="hover:text-blue-400">Login</a>
+            <a href="signup.html" id="nav-signup"
+                class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded-md text-sm transition-all">Sign Up</a>
+            <button id="nav-logout" class="text-red-400 hover:text-red-300 hidden"
+                style="display: none;">Logout</button>
+            <button id="toggleTheme" class="bg-gray-700 hover:bg-gray-600 text-white px-3 py-1 rounded-md text-sm">
+                ☀️ Light
+            </button>
+        </div>
+    </nav>
+
+    <!-- Main Section -->
+    <main class="flex flex-col items-center justify-center flex-grow text-center p-6">
+        <h2 class="text-3xl font-bold mb-4">Phishing Website Detection</h2>
+        <p class="text-gray-300 mb-6">Enter a URL below to check its safety using AI and ML 🔍</p>
+
+        <!-- Input Form -->
+        <form id="predictForm" class="flex flex-col sm:flex-row bg-gray-800 rounded-lg p-4 shadow-lg w-full max-w-lg">
+            <input type="text" id="urlInput" name="url" placeholder="https://example.com"
+                class="flex-grow p-2 rounded-md text-black focus:outline-none" required>
+            <button type="submit"
+                class="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded-md mt-3 sm:mt-0 sm:ml-2">
+                Analyze
+            </button>
+        </form>
+
+        <!-- Prediction Result Container -->
+        <div id="resultContainer" class="mt-6 p-4 bg-gray-700 rounded-lg text-lg font-semibold fade-in hidden">
+            <!-- Result text will be injected here -->
+        </div>
+
+        <!-- Dashboard Stats -->
+        <section class="mt-10 grid grid-cols-1 sm:grid-cols-3 gap-6 w-full max-w-3xl">
+            <div class="card bg-gray-800 p-6 rounded-lg shadow-lg text-center">
+                <h3 id="total" class="text-3xl font-bold text-blue-400">0</h3>
+                <p class="text-gray-400">Websites Checked</p>
+            </div>
+            <div class="card bg-gray-800 p-6 rounded-lg shadow-lg text-center">
+                <h3 id="safe" class="text-3xl font-bold text-green-400">0</h3>
+                <p class="text-gray-400">Safe Sites</p>
+            </div>
+            <div class="card bg-gray-800 p-6 rounded-lg shadow-lg text-center">
+                <h3 id="phish" class="text-3xl font-bold text-red-400">0</h3>
+                <p class="text-gray-400">Phishing Sites</p>
+            </div>
+        </section>
+
+        <!-- Progress Bar -->
+        <div class="w-full max-w-3xl mt-10">
+            <h3 class="text-lg font-semibold mb-2">Detection Overview</h3>
+            <div class="w-full bg-gray-700 rounded-full h-6 overflow-hidden">
+                <div id="safeBar"
+                    class="bg-green-500 h-6 text-xs flex items-center justify-center text-white font-semibold transition-all duration-700"
+                    style="width: 0%;">
+                    Safe
+                </div>
+                <div id="phishBar"
+                    class="bg-red-500 h-6 text-xs flex items-center justify-center text-white font-semibold transition-all duration-700"
+                    style="width: 0%;">
+                    Phishing
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800/90 text-center py-4 text-gray-400 text-sm">
+        © 2025 | Developed by <span class="text-blue-400 font-semibold">Rohit Yadav</span>
+    </footer>
+
+    <!-- =================== SCRIPT =================== -->
+    <script>
+        // Configuration
+        // IMPORTANT: Change this URL to your deployed Render backend URL when deploying!
+        const API_BASE_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+            ? 'http://127.0.0.1:5000'
+            : 'https://phishing-website-detection-using-ml-kvue.onrender.com';
+
+        // Smooth counter animation
+        function animateCounter(id, endValue, duration) {
+            const el = document.getElementById(id);
+            if (!el) return;
+
+            let start = parseInt(el.textContent.replace(/,/g, '')) || 0;
+            endValue = Number(endValue) || 0;
+
+            if (start === endValue) {
+                el.textContent = endValue.toLocaleString();
+                return;
+            }
+
+            const range = endValue - start;
+            const absRange = Math.abs(range);
+            const minInterval = 16; // ~60fps
+            const stepTime = Math.max(Math.floor(duration / absRange), minInterval);
+            const step = range > 0 ? 1 : -1;
+
+            let current = start;
+            const timer = setInterval(() => {
+                current += step;
+                el.textContent = current.toLocaleString();
+                if ((step > 0 && current >= endValue) || (step < 0 && current <= endValue)) {
+                    clearInterval(timer);
+                    el.textContent = endValue.toLocaleString();
+                }
+            }, stepTime);
+        }
+
+        function updateStatsUI(stats) {
+            animateCounter('total', stats.total, 800);
+            animateCounter('safe', stats.safe, 800);
+            animateCounter('phish', stats.phishing, 800);
+
+            // Progress bar update
+            const total = Math.max(stats.total, 1); // avoid division by 0
+            const safePercent = Math.round((stats.safe / total) * 100);
+            const phishPercent = Math.round((stats.phishing / total) * 100);
+
+            const safeBar = document.getElementById('safeBar');
+            const phishBar = document.getElementById('phishBar');
+
+            if (safeBar && phishBar) {
+                safeBar.style.width = safePercent + '%';
+                phishBar.style.width = phishPercent + '%';
+                safeBar.textContent = safePercent + '% Safe';
+                phishBar.textContent = phishPercent + '% Phishing';
+            }
+        }
+
+        // Fetch stats from backend
+        async function fetchStats() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/stats`);
+                if (!response.ok) throw new Error('Failed to fetch stats');
+                const stats = await response.json();
+                console.log("DEBUG: Fetched Stats:", stats);
+                updateStatsUI(stats);
+            } catch (error) {
+                console.error("Error fetching stats:", error);
+            }
+        }
+
+        // Handle form submission
+        const form = document.getElementById('predictForm');
+        const resultContainer = document.getElementById('resultContainer');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const urlInput = document.getElementById('urlInput').value;
+            const button = form.querySelector('button');
+
+            // Loading state
+            button.disabled = true;
+            button.textContent = 'Analysing...';
+            resultContainer.classList.add('hidden');
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/predict`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ url: urlInput })
+                });
+
+                const data = await response.json();
+
+                // Show result
+                resultContainer.textContent = data.message;
+                resultContainer.classList.remove('hidden');
+
+                // Update stats if returned
+                if (data.stats) {
+                    updateStatsUI(data.stats);
+                }
+
+            } catch (error) {
+                console.error("Error predicting:", error);
+                resultContainer.textContent = "❌ Error connecting to server. Please try again.";
+                resultContainer.classList.remove('hidden');
+            } finally {
+                button.disabled = false;
+                button.textContent = 'Analyze';
+            }
+        });
+
+        // Initialize
+        window.addEventListener('load', () => {
+            fetchStats();
+        });
+
+        // Dark/Light mode toggle
+        const toggleBtn = document.getElementById('toggleTheme');
+        const page = document.getElementById('page');
+        let dark = true;
+
+        toggleBtn.addEventListener('click', () => {
+            dark = !dark;
+            if (dark) {
+                page.classList.replace('light-mode', 'dark-mode');
+                toggleBtn.textContent = '☀️ Light';
+            } else {
+                page.classList.replace('dark-mode', 'light-mode');
+                toggleBtn.textContent = '🌙 Dark';
+            }
+        });
+    </script>
+</body>
+
+</html>
