@@ -11,7 +11,7 @@ from dotenv import load_dotenv
 load_dotenv(os.path.join(os.path.dirname(__file__), '.env'), override=True)
 
 app = Flask(__name__, template_folder='../frontend', static_folder='../frontend/static')
-CORS(app) # Enable CORS for all routes
+CORS(app, resources={r"/*": {"origins": "*"}}) # Enable CORS for all routes with explicit permissions
 
 # ===============================
 # Load Model and Vectorizer
